@@ -1,6 +1,6 @@
 # Predicting major metro service interruptions
 
-Toboggan Labs technical challenge, using STM's open data on metro incidents (January 2019 to
+Technical challenge, using STM's open data on metro incidents (January 2019 to
 September 2025) and planned metro kilometres (January 2019 to September 2023).
 
 ## Summary
