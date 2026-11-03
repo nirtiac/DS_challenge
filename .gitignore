@@ -218,3 +218,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# STM challenge materials
+/STM challenge Data Scientist/
