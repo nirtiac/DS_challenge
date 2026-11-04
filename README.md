@@ -117,7 +117,7 @@ Major interruptions are rare, so accuracy is not useful. We use:
 ### Models
 
 Logistic regression is the main model because it is simple and interpretable. Gradient boosting is a
-check that a more flexible model would not do much better, and it does not. Neither model is tuned.
+check that a more flexible model would not do much better. Neither model is tuned; they could be given more time.
 
 ### Alternatives considered
 
