@@ -174,7 +174,11 @@ Test years (January 2024 to September 2025):
   30 minutes or more are too few (40 to 57 a year) to separate a trend from year-to-year
   variation. By line (2019 to September 2023), per million km: green 12.8, blue 12.1, yellow 9.1,
   orange 8.2, with the same pattern at 30 minutes or more. The green and orange lines have similar raw counts, but the orange line runs about a
-  third more service.
+  third more service. The km unit is not documented, but the figures are very likely car-km: as
+  train-km, they would mean a train about every 35 seconds in each direction. Assuming 6-car trains on
+  the blue line and 9 on green and orange, the green line stays about 50% above orange per train-km,
+  while the blue line is level with it (0.98 times, interval 0.88 to 1.08). The yearly trend is not
+  affected (section 5.2 of the notebook).
 - **How symptoms are recorded has changed over time** (train incidents, section 5.4 of the notebook):
 
   | Share of train incidents | 2019 | 2020 | 2021 | 2022 | 2023 | 2024 | 2025 (Jan to Sep) |
@@ -204,7 +208,8 @@ Neither model meets our self-imposed success criterion, however part 2 is clearl
 ### How STM should measure reliability
 
 - Count **interruptions of 5 minutes or more per million km actually run**, by line and month.
-  Raw counts mislead when comparing lines or years.
+  Raw counts mislead when comparing lines or years. State the km unit, because lines with shorter
+  trains look worse per car-km.
 - Track **interruptions of 30 minutes or more separately, with their uncertainty**: they are rare,
   so year-to-year changes are hard to tell from noise.
 - Keep **station incidents separate**: they do not affect service.
@@ -226,8 +231,8 @@ Neither model meets our self-imposed success criterion, however part 2 is clearl
 
 **CFO (prioritisation, confidence, financial burden).**
 
-- **Prioritise lines by rate per km, not by count:** on that measure, the green and blue lines come
-  first.
+- **Prioritise lines by rate per km, not by count:** the green line comes first per car-km and per
+  train-km. The blue line only stands out per car-km.
 - **Confidence:** treat the model as support for the control room, not a decision-maker. It is better
   than a simple rule but misses the success bar, so it would likely not be trusted on its own. Use it
   to rank incidents, and read its top scores as "high", not as exact probabilities. More complete and
@@ -254,7 +259,7 @@ What STM could change in how the data is recorded and published, most important 
 | **`Incident en minutes` is not documented**, and disagrees with the start and end times | Two competing sources of truth for the target: the times give 27% more interruptions of 30 minutes or more | Document what it measures and how it relates to the start and end times, and resolve the inconsistency between the two in the data. Record the delay to service and the length of the incident as separate fields |
 | **Train times cover the delay to customers**, not the incident | No way to measure how long detection or escalation takes; the prediction time in the model is approximate | Also record when the incident started, was detected, was escalated, and when service resumed |
 | **When the response flags are set is not recorded** (`CAT`, `Évacuation`, `Dommage matériel`) | They had to be left out of the models: it is unknown whether they are known early or are consequences of a long incident | Record the time each flag is set |
-| **Planned km stops in September 2023**, and is planned, not actually run | Incident rates per km cannot be calculated for 2024 to 2025 | Publish planned and actual km for the same period as the incidents |
+| **Planned km stops in September 2023**, is planned, not actually run, and has no documented unit | Incident rates per km cannot be calculated for 2024 to 2025, and line comparisons depend on the unit | Publish planned and actual km for the same period as the incidents, and state the unit |
 | **No ridership or cost data** | Impact on riders and the financial burden cannot be measured | Link incidents to ridership by line and time of day, and to cost estimates |
 | **Symptom recording changes over time** (see Findings) | A change in classification can look like a change in reliability, and the symptom, a key feature of the models, means slightly different things in different years | Make the symptom mandatory, document every category, and record when the categories or their rules change |
 | **Some fields contradict each other or differ from their documentation**, such as `Porte` and `Porte de voiture`, and `Type de matériel` | Features that look usable are unreliable or leak the outcome | Document what each field means, and check consistency when incidents are entered |
@@ -281,6 +286,9 @@ What STM could change in how the data is recorded and published, most important 
 - **Undocumented codes are interpreted from the data**, for example `Non affecté` in `Ligne` as
   "not on a line" (see the data dictionary).
 - **The planned km file's dates are service days**, like the incidents.
+- **The planned km are car-km**, with 6-car trains on the blue line and 9 on green and orange. The
+  documentation gives no unit, and the train lengths come from public sources, which conflict for the
+  yellow line.
 
 ## Limitations
 
@@ -449,7 +457,7 @@ The cleaned file has 45,556 incidents.
 |---|---|---|---|---|---|
 | `Ligne` → `line` | Name of the line | — | None | 4 lines, same colour names as the incidents file | Kept (used to join the two files) |
 | `Jour calendaire` → `date` | Calendar day | — | None | Runs from 2019-01-01 to **2023-09-30 only**; incidents run to 2025-09-30 | Converted to a date |
-| `KM planifié` → `planned_km` | Planned km after the year's budget adjustments | — | `0`: 1,536, the empty half of each pair of placeholder rows (see next row) | Written with a French decimal comma (`16315,92`). Planned, not actually run | Converted to a number. Summed per line and day |
+| `KM planifié` → `planned_km` | Planned km after the year's budget adjustments | — | `0`: 1,536, the empty half of each pair of placeholder rows (see next row) | Written with a French decimal comma (`16315,92`). Planned, not actually run. Unit not documented; very likely car-km (see Findings) | Converted to a number. Summed per line and day |
 | `Période Exploitation`, `Type de Jour` | Service period and day type | — | `#` (`Période Exploitation`) and `Non affecté` (`Type de Jour`): 1,536 rows. On 384 days between 2019-01-01 and 2020-06-14, each line has a second row with these codes | Exactly one row in each pair has kilometres, and it is not always the normal row (868 times it is the `#` row), so the `#` rows cannot simply be dropped | The two rows are added together, then these columns are dropped |
 | `Tournée` | Run number: 001, 050, 060, 066 or 999 | — | None | Always `001` | Dropped |
 | `Année civile`, `Année civile/mois`, `Année civile/semaine`, `Jour de la semaine`, `Mois calendrier` | Date parts | — | None | Repeat `Jour calendaire` | Dropped; `year` and `month` rebuilt from `date` |
