@@ -216,7 +216,7 @@ Neither model meets our self-imposed success criterion, however part 2 is clearl
 
 **VP Operations (earlier escalation, reduced disruption).**
 
-- Use **elapsed time as the main trigger**, sharpened by the symptom and the model. At minute 5,
+- Use **elapsed time as the main trigger (don't jump to act) **, sharpened by the symptom and the model. At minute 5,
   escalate the model's riskiest 10% of delays, which already includes nearly all fire, smoke or odour
   incidents.
 - Without a model, use two triggers: any fire, smoke or odour incident still delaying service at
