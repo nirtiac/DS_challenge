@@ -3,6 +3,10 @@
 Technical challenge leveraging STM's open data on metro incidents (January 2019 to
 September 2025) and planned metro kilometres (January 2019 to September 2023).
 
+**A note on methodology and timing**: I made heavy use of AI, mostly Claude Opus 5.5. Following my own philosophy of how one should leverage AI in general I spent 4 hours roughly divided into 30 minutes non-AI EDA  + ideation, 1h30 AI-heavy work with iteration getting to 90%, 2h cleanup, review and re-write. I chose to pursue a very broad + complete solution within the time constraint as AI allows me to leverage my skill of being able to read and review quickly, but this choice does sacrifice depth and increases the possibility of uncaught errors. 
+
+I use 'we' in this writeup simply because it felt less awkward than I.
+
 ## Summary
 
 After cleaning and exploring the dataset, we set up a prediction task for major interruptions. 
@@ -32,9 +36,6 @@ To run the analysis:
    [`modelling.ipynb`](modelling.ipynb) from top to bottom, in `jupyter lab` or an IDE: it cleans the raw files itself, through
    `clean_incidents()` and `clean_planned_km()`.
 
-**A note on methodology and timing**: I made heavy use of AI, mostly Claude Opus 5.5. Following my own philosophy of how one should leverage AI in general I spent 4 hours roughly divided into 30 minutes non-AI EDA  + ideation, 1h30 AI-heavy work with iteration getting to 90%, 2h cleanup, review and re-write. I chose to pursue a very broad + complete solution within the time constraint as AI allows me to leverage my skill of being able to read and review quickly, but this choice does sacrifice depth and increases the possibility of uncaught errors. 
-
-I use 'we' in this writeup simply because it felt less awkward than I.
 
 ## Analytical strategy
 
