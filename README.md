@@ -41,8 +41,7 @@ To run the analysis:
 **Train incidents only.** The documentation says station incidents do not affect metro service, so
 we cannot clearly link them to major interruptions. To reduce overall complexity and provide clear messaging, we therefore choose to focus only on metro service interruptions.
 
-**Why not predict escalation itself?** Escalation is what STM wants to improve, but the data barely
-records it. The only response recorded is calling the metro emergency team, which is specialised:
+**Why not predict escalation itself?** Escalation is what STM wants to improve but it is not clearly reflected in the data. The only response recorded is calling the metro emergency team, which is specialised:
 among delays of 30 minutes or more, it was called for 84% of those with a rolling-stock symptom but
 only 13% of those with fire or smoke. Predicting it would reproduce current practice, not improve on
 it. So we predict what escalation is meant to prevent, a long interruption, while there is still
@@ -161,6 +160,7 @@ Test years (January 2024 to September 2025):
   model already puts 78 of these 79 incidents in its riskiest 10% (about 9 alerts a month).
 - **The probabilities are reasonably calibrated:** 9.0% predicted on average against 8.4%
   observed. The highest-risk group is overestimated (about 27% predicted against 20% observed).
+  Still, this means that probabilities can be used.
 - **Reliability per km** (January to September of each year, so that years compare fairly):
 
   | | 2019 | 2020 | 2021 | 2022 | 2023 |
@@ -221,9 +221,7 @@ Neither model meets our self-imposed success criterion, however part 2 is clearl
 
 **VP Operations (earlier escalation, reduced disruption).**
 
-- Use **elapsed time as the main trigger (don't jump to act) **, sharpened by the symptom and the model. At minute 5,
-  escalate the model's riskiest 10% of delays, which already includes nearly all fire, smoke or odour
-  incidents.
+- Feel comfortable using **elapsed time as the main trigger (don't jump to act)**, sharpened by the symptom and the model. At minute 5, consider asking the controllers to take into account a prediction of a highest probability-delay, which already includes nearly all fire, smoke or odour incidents.
 - Without a model, use two triggers: any fire, smoke or odour incident still delaying service at
   minute 5, and any delay still running at minute 15.
 - **Record every escalation and its time**, so that the effect of escalating earlier can be measured,
