@@ -134,6 +134,8 @@ def time_to_minutes(time_text):
     STM uses a "service day": an incident belongs to the day it started in.
     Start times run from 02:00 to 25:59 (2 a.m. the next morning). End times
     keep counting on the same clock, so they go up to 29:xx (5 a.m.).
+
+    Note: this is custom to this specific dataset and is not written to be robust.
     """
     parts = time_text.split(":")
     hours = int(parts[0])
@@ -411,12 +413,12 @@ def add_duration_columns(df):
     """Add the calculated duration, and compare it with the duration bucket.
 
     duration_minutes is end time minus start time:
-    - for train incidents, it is the delay to customers;
+    - for train incidents, it is the delay to customers (per the documentation);
     - for station incidents, it is how long the incident lasted.
 
-    The bucket only measures the delay to train service, so it is only
-    meaningful for train incidents. Station incidents are all in the lowest
-    bucket, whatever their real duration.
+    The bucket is not documented. We read it as the delay to train service,
+    because station incidents are all in the lowest bucket, whatever their
+    real duration. So it is only meaningful for train incidents.
     """
     duration = df["end_datetime"] - df["start_datetime"]
     df["duration_minutes"] = (duration.dt.total_seconds() / 60).astype(int)
@@ -427,13 +429,14 @@ def add_duration_columns(df):
     df["bucket_min_minutes"] = df["duration_bucket"].map(bucket_minimums)
 
     # For train incidents: does the bucket agree with the start and end times?
-    # (It does about 99% of the time.) Left empty for station incidents.
+    # (It does for about 98% of them; when it does not, the times are almost
+    # always longer than the bucket.) Left empty for station incidents.
     matches = []
-    for incident_type, duration, bucket in zip(
+    for incident_type, minutes, bucket in zip(
         df["incident_type"], df["duration_minutes"], df["duration_bucket"]
     ):
         if incident_type == "T":
-            matches.append(duration_matches_bucket(duration, bucket))
+            matches.append(duration_matches_bucket(minutes, bucket))
         else:
             matches.append(pd.NA)
     df["bucket_matches_times"] = pd.Series(matches, index=df.index, dtype="boolean")
