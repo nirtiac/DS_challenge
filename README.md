@@ -50,7 +50,7 @@ time to act.
 
 The notebook tries two versions of the question, in order:
 
-| | Part 1 | Part 2 (recommended) |
+| | Part 1 | Part 2 |
 |---|---|---|
 | Target/Question | When a train incident is reported, will the delay reach 10 minutes? | When a train delay has lasted 5 minutes, will it reach 30 minutes? |
 | Population | All train incidents | Train delays that reached 5 minutes (STM's definition of an interruption) |
@@ -98,13 +98,13 @@ We leave out columns that look useful but may not be available in time:
 - **Bootstrap intervals:** these show whether a difference between two methods is larger than chance.
   Both methods are scored on the same resampled test incidents.
 
-### Success metrics
+### Metrics and reporting
 
 Major interruptions are rare, so accuracy is not useful. We use:
 
 - **PR-AUC**, read against the base rate, because a random ranking scores about the base rate.
   ROC-AUC is reported for reference.
-- **Our defined success criterion:** an alert threshold that catches at least half
+- **Our self-defined success criterion:** an alert threshold that catches at least half
   of the major interruptions while at least 1 alert in 3 is right. Below that, the control room would
   either miss most major interruptions or learn to ignore the alerts. The 50% and 1-in-3 levels are
   an operational assumption that would be discussed with the STM.
@@ -145,17 +145,17 @@ Test years (January 2024 to September 2025):
 | PR-AUC, gradient boosting | 0.277 | 0.264 |
 | Major incidents caught with at least 1 alert in 3 right (bar: 50%) | 14% (244 alerts, about 12 a month) | 34% (154 alerts, about 7 a month) |
 
-- **Part 1 finds real signal but cannot be acted on.** Logistic regression clearly beats the
+- **Part 1 finds real signal but cannot be easily acted on.** Logistic regression clearly beats the
   symptom rule (bootstrap interval for the PR-AUC difference: 0.12 to 0.17), but it is far from
   the bar. And its alerts fire when the delay has just started: in the training years, 46% of
   10-minute delays were over before 15 minutes, often too soon for a response to make a difference.
 - **Elapsed time is an important variable.** In the training years, 1.7% of train incidents reach
   30 minutes; among delays that have lasted 5 minutes, 8.1%; 10 minutes, 26%; 15 minutes, 48%.
-- **Part 2's gain has two sources** (section 3.6 of the notebook). With the same 30-minute target at
+- **Part 2's improvement has two sources** (section 3.6 of the notebook). With the same 30-minute target at
   minute 0, the model catches 23% of major incidents (PR-AUC 0.181), against 34% (0.299) at minute 5.
   So of the rise from 14% in Part 1 to 34%, about 9 points come from the target and 11 from waiting
   until minute 5.
-- **The model adds to the symptom in Part 2** (PR-AUC difference 0.05 to 0.13). Fire, smoke or
+- **The model adds to the symptoms in Part 2** (PR-AUC difference 0.05 to 0.13). Fire, smoke or
   odour still delaying service at minute 5 is the clearest single signal: 51% of these incidents
   reached 30 minutes in the test years (40 of 79), a quarter of all 30-minute interruptions. The
   model already puts 78 of these 79 incidents in its riskiest 10% (about 9 alerts a month).
@@ -194,6 +194,10 @@ Test years (January 2024 to September 2025):
 - **One cause surges inside the test years** (section 5.5 of the notebook). `Service de la voie` is
   41% of train incidents in August and September 2024, and its share with a rolling-stock symptom
   rose from 4% in 2019 to 72% in 2024. Neither the 2023 rise nor the test results depend on it.
+
+  ### Overall summary:
+
+Neither model meets our self-imposed success criterion, however part 2 is clearly an improvement. Pending discussion with stakeholders to better understand missing variables, it would likely be reasonable for a controller to take the model's predictions into account when making an escalation decision in the control room.
 
 ## Recommendations
 
